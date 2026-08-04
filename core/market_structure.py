@@ -6,6 +6,7 @@ class MarketStructure:
     def detect_swing_high(self, highs, index):
         if index < 2 or index > len(highs) - 3:
             return False
+
         return (
             highs[index] > highs[index - 1]
             and highs[index] > highs[index - 2]
@@ -16,12 +17,24 @@ class MarketStructure:
     def detect_swing_low(self, lows, index):
         if index < 2 or index > len(lows) - 3:
             return False
+
         return (
             lows[index] < lows[index - 1]
             and lows[index] < lows[index - 2]
             and lows[index] < lows[index + 1]
             and lows[index] < lows[index + 2]
         )
+
+    def detect_bos(self):
+        if len(self.swing_highs) >= 2:
+            if self.swing_highs[-1][1] > self.swing_highs[-2][1]:
+                return "Bullish BOS"
+
+        if len(self.swing_lows) >= 2:
+            if self.swing_lows[-1][1] < self.swing_lows[-2][1]:
+                return "Bearish BOS"
+
+        return "No BOS"
 
     def analyze(self, highs, lows):
         self.swing_highs.clear()
@@ -37,6 +50,5 @@ class MarketStructure:
         return {
             "swing_highs": self.swing_highs,
             "swing_lows": self.swing_lows,
+            "bos": self.detect_bos(),
         }
-+ao
-
